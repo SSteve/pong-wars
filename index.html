@@ -259,7 +259,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawSquares();
 
-      scoreElement.textContent = `day ${dayScore} | night ${nightScore}`;
+      scoreElement.textContent = `${gameColorNames[DAY_COLOR]} ${dayScore} | ${gameColorNames[NIGHT_COLOR]} ${nightScore}`;
 
       balls.forEach((ball) => {
         drawBall(ball);
