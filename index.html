@@ -287,6 +287,7 @@
       scoreElement.textContent = scoreText();
 
       if (ballsAreNeighbors(balls[0], balls[1])) {
+        console.log("Ball collision.")
         ballColors[0] = (ballColors[0] + 1) % gameColors.length;
         ballColors[1] = (ballColors[1] + 1) % gameColors.length;
         ballReverseColors[0] = (ballReverseColors[0] + 1) % gameColors.length;
