@@ -114,11 +114,11 @@
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
 
-    const DAY_COLOR = 1;
-    const DAY_BALL_COLOR = 4;
-    const NIGHT_COLOR = 4;
-    const NIGHT_BALL_COLOR = 1;
+    const DAY_COLOR = NIGHT_BALL_COLOR = 1;
+    const DAY_BALL_COLOR = NIGHT_COLOR = 4;
+
     const SQUARE_SIZE = 25;
+
     const MIN_SPEED = 10;
     const MAX_SPEED = 15;
 
@@ -177,6 +177,10 @@
       ctx.fillStyle = gameColors[ballColors[ball.id]];
       ctx.fill();
       ctx.closePath();
+    }
+
+    function ballsAreNeighbors(ball1, ball2) {
+      return Math.abs(ball1.x - ball2.x) <= SQUARE_SIZE && Math.abs(ball1.y - ball2.y) <= SQUARE_SIZE;
     }
 
     function drawSquares() {
@@ -255,11 +259,19 @@
         ball.dy = ball.dy > 0 ? MIN_SPEED : -MIN_SPEED;
     }
 
+    function ballLocation(ball) {
+      return `(${ball.x.toFixed(1)}, ${ball.y.toFixed(1)})`;
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawSquares();
 
       scoreElement.textContent = `${gameColorNames[DAY_COLOR]} ${dayScore} | ${gameColorNames[NIGHT_COLOR]} ${nightScore}`;
+
+      if (ballsAreNeighbors(balls[0], balls[1])) {
+        console.log("Ball collision.")
+      }
 
       balls.forEach((ball) => {
         drawBall(ball);
@@ -272,7 +284,7 @@
       });
 
       iteration++;
-      if (iteration % 1_000 === 0) console.log("iteration", iteration);
+      if (iteration % 1_000 === 0) console.log(`iteration ${iteration}. ball locations: ${ballLocation(balls[0])}, ${ballLocation(balls[1])}`);
 
       requestAnimationFrame(draw);
     }
