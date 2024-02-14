@@ -91,14 +91,32 @@
       OceanicNoir: "#172B36",
     };
 
+    const gameColors = [
+      "#F1F6F4", // ArcticPowder
+      "#D9E8E3", // MysticMint
+      "#FFC801", // Forsythia
+      "#FF9932", // DeepSaffron
+      "#114C5A", // NocturnalExpedition
+      "#172B36", // OceanicNoir
+    ];
+
+    const gameColorNames = [
+      "ArcticPowder",
+      "day",
+      "Forsythia",
+      "DeepSaffron",
+      "night",
+      "OceanicNoir"
+    ]
+
     const canvas = document.getElementById("pongCanvas");
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
 
-    const DAY_COLOR = colorPalette.MysticMint;
-    const DAY_BALL_COLOR = colorPalette.NocturnalExpedition;
-    const NIGHT_COLOR = colorPalette.NocturnalExpedition;
-    const NIGHT_BALL_COLOR = colorPalette.MysticMint;
+    const DAY_COLOR = 1;
+    const DAY_BALL_COLOR = 4;
+    const NIGHT_COLOR = 4;
+    const NIGHT_BALL_COLOR = 1;
     const SQUARE_SIZE = 25;
     const MIN_SPEED = 5;
     const MAX_SPEED = 10;
@@ -115,9 +133,19 @@
     for (let i = 0; i < numSquaresX; i++) {
       squares[i] = [];
       for (let j = 0; j < numSquaresY; j++) {
-        squares[i][j] = i < numSquaresX / 2 ? DAY_COLOR : NIGHT_COLOR;
+        squares[i][j] = i < numSquaresX / 2 ? gameColors[DAY_COLOR] : gameColors[NIGHT_COLOR];
       }
     }
+
+    let ballColors = [
+      DAY_BALL_COLOR,
+      NIGHT_BALL_COLOR
+    ];
+
+    let ballReverseColors = [
+      DAY_COLOR,
+      NIGHT_COLOR,
+    ];
 
     const balls = [
       {
@@ -125,16 +153,14 @@
         y: canvas.height / 2,
         dx: 8,
         dy: -8,
-        reverseColor: DAY_COLOR,
-        ballColor: DAY_BALL_COLOR,
+        id: 0,
       },
       {
         x: (canvas.width / 4) * 3,
         y: canvas.height / 2,
         dx: -8,
         dy: 8,
-        reverseColor: NIGHT_COLOR,
-        ballColor: NIGHT_BALL_COLOR,
+        id: 1,
       },
     ];
 
@@ -143,7 +169,7 @@
     function drawBall(ball) {
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, SQUARE_SIZE / 2, 0, Math.PI * 2, false);
-      ctx.fillStyle = ball.ballColor;
+      ctx.fillStyle = gameColors[ballColors[ball.id]];
       ctx.fill();
       ctx.closePath();
     }
@@ -163,8 +189,8 @@
           );
 
           // Update scores
-          if (squares[i][j] === DAY_COLOR) dayScore++;
-          if (squares[i][j] === NIGHT_COLOR) nightScore++;
+          if (squares[i][j] === gameColors[DAY_COLOR]) dayScore++;
+          if (squares[i][j] === gameColors[NIGHT_COLOR]) nightScore++;
         }
       }
     }
@@ -179,9 +205,9 @@
         const j = Math.floor(checkY / SQUARE_SIZE);
 
         if (i >= 0 && i < numSquaresX && j >= 0 && j < numSquaresY) {
-          if (squares[i][j] !== ball.reverseColor) {
+          if (squares[i][j] !== gameColors[ballReverseColors[ball.id]]) {
             // Square hit! Update square color
-            squares[i][j] = ball.reverseColor;
+            squares[i][j] = gameColors[ballReverseColors[ball.id]];
 
             // Determine bounce direction based on the angle
             if (Math.abs(Math.cos(angle)) > Math.abs(Math.sin(angle))) {
