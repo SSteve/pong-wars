@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pong wars | Koen van Gilst</title>
+    <title>Tag-Team Pong Wars | Koen van Gilst</title>
     <meta
       name="description"
       content="The eternal battle between day and night, good and bad. Written in JavaScript with some HTML & CSS in one index.html. Feel free to reuse the code and create your own version."
@@ -31,7 +31,7 @@
         align-items: center;
         flex-direction: column;
         width: min(70vh, 80%);
-        max-width: 600px;
+        max-width: 800px;
         height: 100%;
       }
 
@@ -110,6 +110,15 @@
       "OceanicNoir"
     ]
 
+    let colorScores = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+
     const canvas = document.getElementById("pongCanvas");
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
@@ -124,9 +133,6 @@
 
     const numSquaresX = canvas.width / SQUARE_SIZE;
     const numSquaresY = canvas.height / SQUARE_SIZE;
-
-    let dayScore = 0;
-    let nightScore = 0;
 
     const squares = [];
 
@@ -184,8 +190,9 @@
     }
 
     function drawSquares() {
-      dayScore = 0;
-      nightScore = 0;
+      for (let index = 0; index < colorScores.length; index++) {
+        colorScores[index] = 0;
+      }
 
       for (let i = 0; i < numSquaresX; i++) {
         for (let j = 0; j < numSquaresY; j++) {
@@ -198,8 +205,7 @@
           );
 
           // Update scores
-          if (squares[i][j] === gameColors[DAY_COLOR]) dayScore++;
-          if (squares[i][j] === gameColors[NIGHT_COLOR]) nightScore++;
+          colorScores[gameColors.indexOf(squares[i][j])]++
         }
       }
     }
@@ -263,14 +269,28 @@
       return `(${ball.x.toFixed(1)}, ${ball.y.toFixed(1)})`;
     }
 
+    function scoreText() {
+      let text = "";
+      for (let index = 0; index < gameColors.length; index++) {
+        if (colorScores[index] > 0) {
+          if (text.length > 0) text += ' | ';
+          text += `${gameColorNames[index]} ${colorScores[index]}`
+        }        
+      }
+      return text;
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawSquares();
 
-      scoreElement.textContent = `${gameColorNames[DAY_COLOR]} ${dayScore} | ${gameColorNames[NIGHT_COLOR]} ${nightScore}`;
+      scoreElement.textContent = scoreText();
 
       if (ballsAreNeighbors(balls[0], balls[1])) {
-        console.log("Ball collision.")
+        ballColors[0] = (ballColors[0] + 1) % gameColors.length;
+        ballColors[1] = (ballColors[1] + 1) % gameColors.length;
+        ballReverseColors[0] = (ballReverseColors[0] + 1) % gameColors.length;
+        ballReverseColors[1] = (ballReverseColors[1] + 1) % gameColors.length;
       }
 
       balls.forEach((ball) => {
@@ -284,7 +304,7 @@
       });
 
       iteration++;
-      if (iteration % 1_000 === 0) console.log(`iteration ${iteration}. ball locations: ${ballLocation(balls[0])}, ${ballLocation(balls[1])}`);
+      if (iteration % 1_000 === 0) console.log(`iteration ${iteration}`);
 
       requestAnimationFrame(draw);
     }
