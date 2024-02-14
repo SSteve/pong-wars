@@ -281,6 +281,14 @@
       return text;
     }
 
+    function randomIndex(excludedIndicies) {
+      let newValue = -1;
+      do {
+        newValue = Math.floor(Math.random() * gameColors.length); 
+      } while (excludedIndicies.includes(newValue));
+      return newValue;
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawSquares();
@@ -290,10 +298,19 @@
       if (ballsAreNeighbors(balls[0], balls[1]) && iteration > lastCollisionIteration + 2) {
         lastCollisionIteration = iteration;
         console.log("Ball collision.")
-        ballColors[0] = (ballColors[0] + 1) % gameColors.length;
-        ballColors[1] = (ballColors[1] + 1) % gameColors.length;
-        ballReverseColors[0] = (ballReverseColors[0] + 1) % gameColors.length;
-        ballReverseColors[1] = (ballReverseColors[1] + 1) % gameColors.length;
+        // Don't let the new color be one of the current colors.
+        let excludedIndicies = [ballColors[0], ballColors[1]]
+        const newIndex = randomIndex(excludedIndicies);
+        ballColors[0] = newIndex;
+
+        // Add the new color of ball 0 to the list of unavailable colors.
+        excludedIndicies.push(newIndex)
+        ballColors[1] = randomIndex(excludedIndicies);
+
+        for (let index = 0; index < ballColors.length; index++) {
+          ballReverseColors[index] = (ballColors[index] + 3) % gameColors.length;
+        }
+        console.log(`New colors: ${gameColorNames[ballReverseColors[0]]} & ${gameColorNames[ballReverseColors[1]]}`)
       }
 
       balls.forEach((ball) => {
