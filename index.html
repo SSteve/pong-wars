@@ -176,6 +176,7 @@
     ];
 
     let iteration = 0;
+    let lastCollisionIteration = -1;
 
     function drawBall(ball) {
       ctx.beginPath();
@@ -286,7 +287,8 @@
 
       scoreElement.textContent = scoreText();
 
-      if (ballsAreNeighbors(balls[0], balls[1])) {
+      if (ballsAreNeighbors(balls[0], balls[1]) && iteration > lastCollisionIteration + 2) {
+        lastCollisionIteration = iteration;
         console.log("Ball collision.")
         ballColors[0] = (ballColors[0] + 1) % gameColors.length;
         ballColors[1] = (ballColors[1] + 1) % gameColors.length;
