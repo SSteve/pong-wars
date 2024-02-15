@@ -47,8 +47,7 @@
       #score {
         font-family: monospace;
         margin-top: 30px;
-        font-size: 16px;
-        padding-left: 10px;
+        font-size: 15px;
         color: #172b36;
       }
 
@@ -87,7 +86,8 @@
     // Source palette: https://twitter.com/AlexCristache/status/1738610343499157872
     // Idea for Pong wars: https://twitter.com/nicolasdnl/status/1749715070928433161
 
-    const colorPalette = {
+/*     
+      const colorPalette = {
       ArcticPowder: "#F1F6F4",
       MysticMint: "#D9E8E3",
       Forsythia: "#FFC801",
@@ -95,6 +95,7 @@
       NocturnalExpedition: "#114C5A",
       OceanicNoir: "#172B36",
     };
+*/
 
     const gameColors = [
       "#F1F6F4", // ArcticPowder
@@ -103,6 +104,7 @@
       "#FF9932", // DeepSaffron
       "#114C5A", // NocturnalExpedition
       "#172B36", // OceanicNoir
+      "#992222"
     ];
 
     const gameColorNames = [
@@ -111,17 +113,11 @@
       "lemon",
       "saffron",
       "night",
-      "noir"
+      "noir",
+      "apple",
     ]
 
-    let colorScores = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ]
+    const colorScores = Array(gameColors.length).fill(0);
 
     const canvas = document.getElementById("pongCanvas");
     const ctx = canvas.getContext("2d");
