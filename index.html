@@ -48,8 +48,12 @@
         font-family: monospace;
         margin-top: 30px;
         font-size: 16px;
-        padding-left: 20px;
+        padding-left: 10px;
         color: #172b36;
+      }
+
+      .current_color {
+        background-color: #899A9C;
       }
 
       #made {
@@ -275,7 +279,15 @@
       for (let index = 0; index < gameColors.length; index++) {
         if (colorScores[index] > 0) {
           if (text.length > 0) text += ' | ';
-          text += `${gameColorNames[index]} ${colorScores[index]}`
+          let namePrefix = "";
+          let nameSuffix = "";
+          if (ballReverseColors.includes(index)){
+            // Highlight the names of the current colors.
+            namePrefix = "<span class=\"current_color\">";
+            nameSuffix = "</span>"
+          }
+          text += `${namePrefix}${gameColorNames[index]}${nameSuffix} `
+          text += `${colorScores[index]}`.padStart(3, `x`).replace(/x/g, "&nbsp;")
         }        
       }
       return text;
@@ -289,14 +301,8 @@
       return newValue;
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawSquares();
-
-      scoreElement.textContent = scoreText();
-
-      if (ballsAreNeighbors(balls[0], balls[1]) && iteration > lastCollisionIteration + 2) {
-        lastCollisionIteration = iteration;
+    function assignNewBallColors() {
+      lastCollisionIteration = iteration;
         console.log("Ball collision.")
         // Don't let the new color be one of the current colors.
         let excludedIndicies = [ballColors[0], ballColors[1]]
@@ -311,6 +317,16 @@
           ballReverseColors[index] = (ballColors[index] + 3) % gameColors.length;
         }
         console.log(`New colors: ${gameColorNames[ballReverseColors[0]]} & ${gameColorNames[ballReverseColors[1]]}`)
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawSquares();
+
+      scoreElement.innerHTML = scoreText();
+
+      if (ballsAreNeighbors(balls[0], balls[1]) && iteration > lastCollisionIteration + 2) {
+        assignNewBallColors()
       }
 
       balls.forEach((ball) => {
